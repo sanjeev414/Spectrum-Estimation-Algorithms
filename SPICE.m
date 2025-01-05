@@ -1,3 +1,24 @@
+
+%%
+ % Copyright (c) 2025, Sanjeeva Reddy S
+ % All rights reserved.
+ 
+ %This source code is licensed under the MIT license found in the
+ % LICENSE file in the root directory of this source tree.
+ 
+ % Unauthorized copying of this file, via any medium, is strictly prohibited
+ % unless explicit permission is granted by the copyright owner.
+ 
+ % Description:
+ % This file contains utility functions for processing sparse arrays.
+ 
+ % Author: Sanjeeva Reddy S
+ % EMail: sanjeevareddy.s414@gmail.com
+ % Created on: January 5, 2025
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Clear the cache
@@ -106,42 +127,3 @@ xlabel("Normalized Frequency");ylabel("Amplitude");
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% %% SNR estimation
-% 
-% p = sort(s_new,'ascend');
-% sn = zeros(M,1);
-% for n0 = 0:M-1
-%     for k0 = 0:M-1
-%         sn(n0+1) = p(k0+1)/ (n0+1);
-%     end
-% end
-% 
-% 
-% qn = zeros(M,1);
-% for n1 = 0:M-1
-%     for k1 = 0:M-1
-%         qn(n1+1) = (((p(k1+1)^2)/(n1+1))-sn(n1+1)^2);
-%     end
-% end
-% 
-% tn = (sn.^2)./qn;
-% 
-% k1 = [];k2 = [];
-% for ii=0:M-1
-%     if(tn(ii+1)<1)
-%         k1 = [k1,(ii+1)];
-%     elseif (tn(ii+1)>=1)
-%         k2 = [k2,(ii+1)];
-%     end
-% end
-% 
-% ps = sum(p(k1))/length(k1);
-% 
-% pn = sum(p(k2))/length(k2);
-% 
-% est_SNR = ps/pn;
-
-
-
-
