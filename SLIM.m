@@ -1,3 +1,24 @@
+%%
+ % Copyright (c) 2025, Sanjeeva Reddy S
+ % All rights reserved.
+ 
+ %This source code is licensed under the MIT license found in the
+ % LICENSE file in the root directory of this source tree.
+ 
+ % Unauthorized copying of this file, via any medium, is strictly prohibited
+ % unless explicit permission is granted by the copyright owner.
+ 
+ % Description:
+ % This file contains utility functions for processing sparse arrays.
+ 
+ % Author: Sanjeeva Reddy S
+ % EMail: sanjeevareddy.s414@gmail.com
+ % Created on: January 5, 2025
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Clear the cache
@@ -47,7 +68,10 @@ noise = sqrt(noisePower) * noise;
 % Adding Signal and Noise
 signals = (signal +noise)';
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Power Computation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 DFT = exp(-1i*2*pi*(0:N-1)'*(0:M-1)/M);
 DFT = [DFT I];
@@ -56,6 +80,9 @@ IDFT = DFT';
 sigma = sqrt(noisePower)  ;
 % Find the intial power values
 p_old = abs(IDFT*signals).^2/norm(DFT)^4;
+
+%% Algorithm Implementation
+
 for loop = 1:1e6
     
     R = DFT*diag(p_old)*IDFT + sigma.*I ;
@@ -78,6 +105,7 @@ for loop = 1:1e6
 end
 
 p_new=real(p_new);
-
 pnew1 = p_new(1:M);
+
+
 plot(eomg,pnew1);
