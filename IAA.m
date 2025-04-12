@@ -35,7 +35,7 @@ clc;clear;close;tic
 
 N = 512;  N1=N^2;% Number of Samples
 numSignals = 3;                          % Number of incoming signals
-SNR = -15;                                     % SNR values in db
+SNR = 5;                                     % SNR values in db
 omg = [0.310 0.315  0.145];          % Frequencies
 M = 1024;  M1 = M+N; I =  eye(N);                                                    % Extended Number of Samples for high resolution
 
@@ -61,14 +61,9 @@ for i = 1:numSignals
 end
 
 
-% Generate noise
-noise = (randn(1,N ) + 1i * randn(1,N )) * sqrt(0.5);  % Generation of Pseudo-Random Noise
-noisePower = 10^(-SNR/10); % Noise Power
-noise = sqrt(noisePower) * noise;
-E = sqrt(noisePower).*eye(N);
 
 % Adding Signal and Noise
-signals = (signal +noise)';
+signals = awgn(signal,SNR,'measured')';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,7 +85,7 @@ s_old = abs(IDFT*signals).^2/norm(DFT)^4;
 
 
 for ii = 1:1e6
-    R = DFT*diag(s_old)*IDFT + E;
+    R = DFT*diag(s_old)*IDFT ;
     Rinv = inv(R);
     aa = (abs(IDFT*Rinv*signals).^2);
     bb = [];
@@ -110,6 +105,11 @@ s_new=real(s_new);
 snew1 = s_new(1:M);
 
 
+
+figure; plot(eomg,s_old(1:M));
+title("Power Spectrum Using Periodogram");
+xlabel("Normalized Frequency");ylabel("Amplitude");
+
 figure; plot(eomg,snew1);
-
-
+title("Power Spectrum Using IAA Optimization");
+xlabel("Normalized Frequency");ylabel("Amplitude");
