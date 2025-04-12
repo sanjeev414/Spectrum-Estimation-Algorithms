@@ -35,7 +35,7 @@ clc;clear;close;tic
 
 N = 200;  N1=N^2;% Number of Samples
 numSignals = 3;                          % Number of incoming signals
-SNR = -15;                                     % SNR values in db
+SNR = 5;                                     % SNR values in db
 omg = [0.310 0.315  0.145];          % Frequencies
 M = 512;   M1 = M+N;  I = eye(N);                                                   % Extended Number of Samples for high resolution
 
@@ -66,12 +66,15 @@ noisePower = 10^(-SNR/10); % Noise Power
 noise = sqrt(noisePower) * noise;
 
 % Adding Signal and Noise
-signals = (signal +noise)';
+signals = awgn(signal,SNR,'measured')';
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Finding the Normalized Power
+Signal_Power = (abs(fft(signals',M))).^2;  % Computation of FFT
+S_P = (Signal_Power)/N1;  % Dividing by norm of Steering Vector
+S_Po=[S_P ((abs(signals').^2))];
+
 %% Power Computation
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 DFT = exp(-1i*2*pi*(0:N-1)'*(0:M-1)/M);
 DFT = [DFT I];
@@ -79,13 +82,10 @@ IDFT = DFT';
 
 sigma = sqrt(noisePower)  ;
 % Find the intial power values
-p_old = abs(IDFT*signals).^2/norm(DFT)^4;
-
-%% Algorithm Implementation
-
+p_old = S_Po;
 for loop = 1:1e6
     
-    R = DFT*diag(p_old)*IDFT + sigma.*I ;
+    R = DFT*diag(p_old)*IDFT;
     Rinv = inv(R);
 
     sk = [];
@@ -105,7 +105,12 @@ for loop = 1:1e6
 end
 
 p_new=real(p_new);
+
 pnew1 = p_new(1:M);
+figure; plot(eomg,S_Po(1:M));
+title("Power Spectrum Using Periodogram");
+xlabel("Normalized Frequency");ylabel("Amplitude");
 
-
-plot(eomg,pnew1);
+figure; plot(eomg,pnew1);
+title("Power Spectrum Using SLIM Optimization");
+xlabel("Normalized Frequency");ylabel("Amplitude");
