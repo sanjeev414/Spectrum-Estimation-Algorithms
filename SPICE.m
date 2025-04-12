@@ -33,9 +33,10 @@ clc;clear;close;tic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+
 N = 200;  N1=N^2; N2=sqrt(N);% N is Number of Samples
 numSignals = 3;                          % Number of incoming signals
-SNR = -15;                                     % SNR values in db
+SNR = 5;                                     % SNR values in db
 omg = [ 0.3110 0.3150  0.1450];          % Frequencies
 M = 512;   I=eye(N);  R1=M+N;                                                  % Extended Number of Samples for high resolution
 
@@ -58,7 +59,7 @@ for i = 1:numSignals
 end
 
 
-signals = awgn(signal,SNR);
+signals = awgn(signal,SNR,'measured');
 % % Generate noise
 % noise = (randn(1,N ) + 1i * randn(1,N )) * sqrt(0.5);  % Generation of Pseudo-Random Noise
 % noisePower = 10^(-SNR/10); % Noise Power
@@ -93,15 +94,10 @@ for jj=1:1e6
     R_inv=inv(R);
     u = R_inv*signals';
     c = abs(ID*u);
-    % w=[];rho=0;
-    % for k2=1:R1
-    %     ww=norm(D(:,k2))./norm(signals);
-    %     w=[w ww];
-    %     rho=rho+(ww*s_old(k2)*c(k2));
-    % end
+    
     rho = (w*(s_old.*c));
 
-    s_new = (1/rho)*(s_old.*c).*(1./w');
+    s_new =(s_old.*c).*(1./(rho*w'));
 
 
     Er_En = (norm(s_old-s_new))/(norm(s_old));
@@ -113,17 +109,17 @@ for jj=1:1e6
         break;
     end
 end
+
+
 s_new=real(s_new);
 snew1 = s_new(1:M);
 
-% figure;plot(eomg1,(s_new));
-figure; plot(eomg,S_P);
+
+figure; plot(eomg,S_Po(1:M));
 title("Power Spectrum Using Periodogram");
 xlabel("Normalized Frequency");ylabel("Amplitude");
 
 figure; plot(eomg,snew1);
 title("Power Spectrum Using SPICE Optimization");
 xlabel("Normalized Frequency");ylabel("Amplitude");
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
